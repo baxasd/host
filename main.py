@@ -1,5 +1,6 @@
 import pyrealsense2 as rs
 import numpy as np
+import mediapipe as mp
 import cv2
 
 # Configure depth and color streams
@@ -27,6 +28,19 @@ config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 # Start streaming
 pipeline.start(config)
 
+# Initialize mediapipe
+mp_pose = mp.solutions.pose
+mp_drawing = mp.solutions.drawing_utils
+
+# Initialize Mediapipe Pose
+pose = mp_pose.Pose(
+    static_image_mode=False,
+    model_complexity=1,
+    enable_segmentation=False,
+    min_detection_confidence=0.5,
+    min_tracking_confidence=0.5
+)
+
 try:
     while True:
 
@@ -40,6 +54,17 @@ try:
         # Convert images to numpy arrays
         depth_image = np.asanyarray(depth_frame.get_data())
         color_image = np.asanyarray(color_frame.get_data())
+
+        rgb_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
+
+        results = pose.process(rgb_image)
+
+        if results.pose_landmarks:
+            mp_drawing.draw_landmarks(
+                color_image,
+                results.pose_landmarks,
+                mp_pose.POSE_CONNECTIONS
+            )
 
         # Apply colormap on depth image (image must be converted to 8-bit per pixel first)
         depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
@@ -62,4 +87,5 @@ try:
 finally:
 
     # Stop streaming
+    pose.close()
     pipeline.stop()
