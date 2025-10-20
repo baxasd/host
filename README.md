@@ -1,2 +1,2 @@
-# host
+# HOST
 Human Osteo-Skeletal Tracker
