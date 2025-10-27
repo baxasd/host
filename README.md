@@ -16,7 +16,7 @@ It provides a foundation for motion-analysis, biomechanics research, and later m
 ## 🧩 Tech Stack
 | Component | Purpose |
 |------------|----------|
-| **Python 3.10+** | Main programming language |
+| **Python 3.12.3** | Main programming language |
 | **MediaPipe** | Pose estimation / skeleton tracking |
 | **OpenCV** | Frame handling and visualization |
 | **pyrealsense2** | Access Intel RealSense camera streams |
@@ -30,3 +30,8 @@ It provides a foundation for motion-analysis, biomechanics research, and later m
 ```bash
 git clone https://github.com/<your-username>/HOST.git
 cd HOST
+pip install -r requirements.txt
+python main.py
+```
+Please make sure your python version is 3.12.3. Not tested in other versions.
+
