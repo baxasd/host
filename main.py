@@ -4,10 +4,12 @@ from pose.pose_estimator import PoseEstimator
 from filters.kalman_smoother import KalmanSmoother
 from utils.helpers import get_mean_depth, deproject
 
-def main():
+def run_system(use_kalman=True, show_depth=False):
     cam = RealSenseCamera()
     pose_est = PoseEstimator()
-    kalman = KalmanSmoother()
+    kalman = KalmanSmoother() if use_kalman else None
+
+    print(f"[INFO] Kalman filter {'ENABLED' if use_kalman else 'DISABLED'}")
 
     try:
         while True:
@@ -17,8 +19,8 @@ def main():
 
             h, w, _ = color_image.shape
             depth_intrin = depth_frame.profile.as_video_stream_profile().intrinsics
-
             results = pose_est.estimate(color_image)
+
             if results.pose_landmarks:
                 for id, lm in enumerate(results.pose_landmarks.landmark):
                     px, py = int(lm.x * w), int(lm.y * h)
@@ -30,16 +32,19 @@ def main():
                         continue
 
                     X, Y, Z = deproject(depth_intrin, px, py, depth)
-                    X_s, Y_s, Z_s = kalman.update(id, X, Y, Z)
 
-                    if id == 0:  # Nose landmark
-                        print(f"ID {id}: X={X_s:.2f} Y={Y_s:.2f} Z={Z_s:.2f}")
+                    # Apply Kalman smoothing
+                    if use_kalman and kalman:
+                        X, Y, Z = kalman.update(id, X, Y, Z)
+
+                    if show_depth and id == 0:  # Nose
+                        print(f"Landmark {id}: X={X:.3f} Y={Y:.3f} Z={Z:.3f}")
 
                     cv2.circle(color_image, (px, py), 4, (0,255,0), -1)
 
                 pose_est.draw(color_image, results)
 
-            cv2.imshow("3D Smoothed Pose Skeleton", color_image)
+            cv2.imshow("3D Pose Skeleton", color_image)
             if cv2.waitKey(1) & 0xFF == 27:  # ESC
                 break
 
@@ -48,4 +53,4 @@ def main():
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    main()
+    run_system()

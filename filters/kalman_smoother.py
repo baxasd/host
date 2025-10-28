@@ -24,10 +24,16 @@ class KalmanSmoother:
         kf.x[:3] = 0
         return kf
     
-    def update(self, joint_id, X, Y, Z):
-        kf = self.filters[joint_id]
-        if np.all(kf.x[:3]==0):
+    def update(self, jid, X, Y, Z):
+        if jid not in self.filters:
+            self._init_filter(jid)
+
+        kf = self.filters[jid]
+        if np.all(kf.x[:3] == 0):
             kf.x[:3] = np.array([[X], [Y], [Z]])
+
         kf.predict()
-        kf.update(np.array([X,Y,Z]))
-        return kf.x[3].flatten()
+        kf.update(np.array([X, Y, Z]))
+
+        X_s, Y_s, Z_s = kf.x[:3].flatten()
+        return X_s, Y_s, Z_s
