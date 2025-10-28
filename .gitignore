@@ -1,6 +1,6 @@
 .venv
-./camera/__pycache__
-./filters/__pycache__
-./pose/__pycache__
-./utils/__pycache__
+camera/__pycache__
+filters/__pycache__
+pose/__pycache__
+utils/__pycache__
 
