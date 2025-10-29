@@ -40,6 +40,7 @@ ml-dtypes==0.5.3
     #   jaxlib
 numpy==1.26.4
     # via
+    #   -r requirements.in
     #   contourpy
     #   filterpy
     #   jax
@@ -80,4 +81,7 @@ sentencepiece==0.2.1
 six==1.17.0
     # via python-dateutil
 sounddevice==0.5.3
-    # via   mediapipe
+    # via mediapipe
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
