@@ -1,6 +1,6 @@
 # 🦴 OST – Osteo-Skeletal Tracking
 
-![OST Logo](./assets/logo.png)
+![OST Logo](./assets/logo_normal.png)
 
 [![Python](https://img.shields.io/badge/python-3.12.3-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
