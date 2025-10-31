@@ -1,6 +1,6 @@
-# 🦴 HOST – Human Osteo-Skeletal Tracking
+# 🦴 OST – Osteo-Skeletal Tracking
 
-**HOST (Human Osteo-Skeletal Tracking)** is an experimental project that combines **Intel RealSense** depth sensing with **MediaPipe Pose** to detect, track, and record human skeletal movement in real time.  
+**OST (Osteo-Skeletal Tracking)** is an experimental project that combines **Intel RealSense** depth sensing with **MediaPipe Pose** to detect, track, and record human skeletal movement in real time.  
 It provides a foundation for motion-analysis, biomechanics research, and later machine-learning integration.
 
 ---
