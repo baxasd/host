@@ -3,7 +3,7 @@
 ![OST Logo](./assets/logo_normal.png)
 
 [![Python](https://img.shields.io/badge/python-3.12.3-blue)](https://www.python.org/)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
 [![Mediapipe](https://img.shields.io/badge/mediapipe-0097A7.svg?style=for-the-badge&logo=mediapipe&logoColor=white)](https://ai.google.dev/edge/mediapipe/solutions/guide)
 
 **OST (Osteo-Skeletal Tracking)** is an experimental framework that combines **Intel RealSense** depth sensing with **MediaPipe Pose** to detect, track, and record human skeletal movement in real time.  
@@ -34,7 +34,7 @@ It serves as a foundation for **motion analysis**, **biomechanics research**, an
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/OST.git
+git clone https://github.com/baxasd/OST.git
 cd OST
 ````
 
