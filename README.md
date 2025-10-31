@@ -1,6 +1,3 @@
-Ah! Got it 😅 — you want the **entire README ready as a Markdown code block**. Here it is:
-
-````md
 # 🦴 OST – Osteo-Skeletal Tracking
 
 ![OST Logo](./assets/logo.png)
