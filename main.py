@@ -20,51 +20,44 @@ def run_system(use_kalman=True, show_depth=False):
     try:
         while True:
             try:
-                # Get color and depth frames from Camera Object.
                 color_image, depth_frame = cam.get_frames()
                 if color_image is None:
                     continue
 
-                # Gets the height and width of color frame
-                h, w, _ = color_image.shape
-                depth_intrin = depth_frame.profile.as_video_stream_profile().intrinsics
+                # Convert BGR to RGB for MediaPipe
+                rgb_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
+                detection_result = pose_est.estimate(rgb_image)
 
-                # Gets pose and joint estimation layer from Mediapipe. Applies to color frame.
-                results = pose_est.estimate(color_image)
+                # Draw pose landmarks with connections
+                annotated_image = PoseEstimator.draw_landmarks_on_image(rgb_image, detection_result)
 
-                # Extracts depth from camera when results contains landmarks data
-                if results.pose_landmarks:
-                    for id, lm in enumerate(results.pose_landmarks.landmark):
-                        px, py = int(lm.x * w), int(lm.y * h)
-                        if not (0 <= px < w and 0 <= py < h):
-                            continue
+                # Optionally, extract 3D coordinates using depth + Kalman
+                if detection_result.pose_landmarks:
+                    h, w, _ = color_image.shape
+                    depth_intrin = depth_frame.profile.as_video_stream_profile().intrinsics
 
-                        depth = get_mean_depth(depth_frame, px, py, w, h)
-                        if depth is None:
-                            continue
+                    for person_landmarks in detection_result.pose_landmarks:
+                        for id, lm in enumerate(person_landmarks):
+                            px, py = int(lm.x * w), int(lm.y * h)
+                            if not (0 <= px < w and 0 <= py < h):
+                                continue
 
-                        X, Y, Z = deproject(depth_intrin, px, py, depth)
+                            depth = get_mean_depth(depth_frame, px, py, w, h)
+                            if depth is None:
+                                continue
 
-                        # Applies calman smoothing when program ran with --use-kalman arguments
-                        if use_kalman and kalman:
-                            X, Y, Z = kalman.update(id, X, Y, Z)
+                            X, Y, Z = deproject(depth_intrin, px, py, depth)
+                            if use_kalman and kalman:
+                                X, Y, Z = kalman.update(id, X, Y, Z)
 
-                        # Shows 3D Coordinates of specified joint ID in console when program ran with --show-depth argument.
-                        if show_depth and id == 0:  # Nose
-                            print(f"Landmark {id}: X={X:.3f} Y={Y:.3f} Z={Z:.3f}")
+                            if show_depth and id == 0:
+                                print(f"Landmark {id}: X={X:.3f} Y={Y:.3f} Z={Z:.3f}")
 
-                        cv2.circle(color_image, (px, py), 4, (0,255,0), -1)
-                        
-                    # Draws pose on screen
-                    pose_est.draw(color_image, results)
-                
-                # Out of if statement, works even just image output when no landmarks detected.
-                cv2.imshow("3D Pose Skeleton", color_image)
+                cv2.imshow("3D Pose Skeleton", cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR))
 
             except Exception as e:
                 print("Error during frame processing:", e)
 
-            # Interrup with ESC key
             if cv2.waitKey(1) & 0xFF == 27:
                 break
 
