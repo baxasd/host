@@ -1,26 +1,35 @@
+Ah! Got it 😅 — you want the **entire README ready as a Markdown code block**. Here it is:
+
+````md
 # 🦴 OST – Osteo-Skeletal Tracking
 
-**OST (Osteo-Skeletal Tracking)** is an experimental project that combines **Intel RealSense** depth sensing with **MediaPipe Pose** to detect, track, and record human skeletal movement in real time.  
-It provides a foundation for motion-analysis, biomechanics research, and later machine-learning integration.
+![OST Logo](./assets/logo.png)
+
+[![Python](https://img.shields.io/badge/python-3.12.3-blue)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Mediapipe](https://img.shields.io/badge/mediapipe-0097A7.svg?style=for-the-badge&logo=mediapipe&logoColor=white)](https://ai.google.dev/edge/mediapipe/solutions/guide)
+
+**OST (Osteo-Skeletal Tracking)** is an experimental framework that combines **Intel RealSense** depth sensing with **MediaPipe Pose** to detect, track, and record human skeletal movement in real time.  
+It serves as a foundation for **motion analysis**, **biomechanics research**, and future **machine learning applications**.
 
 ---
 
 ## 🎯 Project Goals
 - Capture synchronized **color + depth** streams from an Intel RealSense camera.  
-- Apply **MediaPipe Pose** to extract 33 human landmarks (x, y, z, visibility).  
-- Store the processed data in **CSV** format for further analysis.  
-- Build an extendable base for real-time skeleton analytics and visualization.
+- Apply **MediaPipe Pose** to extract **33 human landmarks**.  
+- Save processed data in **CSV format** for offline analysis.  
+- Provide an **extendable base** for real-time skeleton analytics and visualization.  
 
 ---
 
 ## 🧩 Tech Stack
 | Component | Purpose |
 |------------|----------|
-| **Python 3.12.3** | Main programming language |
+| **Python 3.12.3** | Core programming language |
 | **MediaPipe** | Pose estimation / skeleton tracking |
-| **OpenCV** | Frame handling and visualization |
-| **pyrealsense2** | Access Intel RealSense camera streams |
-| **NumPy & CSV** | Numerical data and export |
+| **OpenCV** | Frame processing & visualization |
+| **pyrealsense2** | Access Intel RealSense streams |
+| **NumPy & CSV** | Data manipulation and export |
 
 ---
 
@@ -28,10 +37,42 @@ It provides a foundation for motion-analysis, biomechanics research, and later m
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/HOST.git
-cd HOST
+git clone https://github.com/<your-username>/OST.git
+cd OST
+````
+
+### 2. Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
+
+> ⚠️ **Note:** Tested only on **Python 3.12.3**. Other versions may not be compatible.
+
+### 3. Run the application
+
+```bash
 python main.py
 ```
-Please make sure your python version is 3.12.3. Not tested in other versions.
 
+---
+
+## 📂 Project Structure
+
+```
+OST/
+├─ assets/         # Logos, images
+├─ data/           # CSV exports
+├─ src/            # Core Python scripts
+├─ requirements.txt
+└─ main.py
+```
+
+---
+
+## 🚀 Future Enhancements
+
+* Integrate **machine learning models** for activity recognition.
+* Real-time **3D skeleton visualization**.
+* Multi-person tracking support.
+* Export to **other formats** like JSON or Parquet.

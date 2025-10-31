@@ -1,5 +1,5 @@
 import argparse
-from main import run_system
+from src.main import run_system
 
 def main():
     parser = argparse.ArgumentParser(
