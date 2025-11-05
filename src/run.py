@@ -4,15 +4,19 @@ from src.pose.pose_estimator import PoseEstimator
 from src.filters.kalman_smoother import KalmanSmoother
 from src.utils.helpers import get_mean_depth, deproject
 
-def run_system(use_kalman=True, show_depth=False):
+def run_system(use_kalman=True, show_depth=False, model=1):
+    """ Main function to run the system """
+
     print("[INFO] Initializing camera...")
 
+    # Initializing objects
     cam = RealSenseCamera(verbose=True)
-    pose_est = PoseEstimator()
+    pose_est = PoseEstimator(model)
     kalman = KalmanSmoother() if use_kalman else None
 
     print(f"[INFO] Kalman filter {'ENABLED' if use_kalman else 'DISABLED'}")
 
+    # Main Loop
     try:
         while True:
             color_image, depth_frame = cam.get_frames()
@@ -43,10 +47,14 @@ def run_system(use_kalman=True, show_depth=False):
                     if use_kalman and kalman:
                         X, Y, Z = kalman.update(id, X, Y, Z)
 
-                    if show_depth and id == 0:
-                        print(f"Landmark {id}: X={X:.3f} Y={Y:.3f} Z={Z:.3f}")
+                    if show_depth:
+                        cv2.putText(color_image,
+                                    f"{id}: ({X:.2f}, {Y:.2f}, {Z:.2f})",
+                                    (px, py - 10),
+                                    cv2.FONT_HERSHEY_SIMPLEX,
+                                    0.4, (0, 255, 255), 1, cv2.LINE_AA)
 
-            cv2.imshow("3D Pose Skeleton", annotated_image)
+                cv2.imshow("3D Pose Skeleton", annotated_image)
 
             if cv2.waitKey(1) & 0xFF == 27:
                 break

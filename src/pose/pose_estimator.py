@@ -1,17 +1,21 @@
 import cv2
 import mediapipe as mp
+import numpy as np
 
 class PoseEstimator:
     """Legacy Mediapipe Pose Estimator."""
 
-    def __init__(self, static_image_mode=False, min_detection_confidence=0.5, min_tracking_confidence=0.5):
+    def __init__(self, model=1, static_image_mode=False, min_detection_confidence=0.5, min_tracking_confidence=0.5):
+        
         self.mp_pose = mp.solutions.pose
+
         self.pose = self.mp_pose.Pose(
             static_image_mode=static_image_mode,
-            model_complexity=2,  # heavy model
+            model_complexity=model,
             min_detection_confidence=min_detection_confidence,
-            min_tracking_confidence=min_tracking_confidence
+            min_tracking_confidence=min_tracking_confidence,
         )
+
         self.mp_draw = mp.solutions.drawing_utils
         self.draw_styles = mp.solutions.drawing_styles
 
@@ -35,3 +39,4 @@ class PoseEstimator:
                 self.draw_styles.get_default_pose_landmarks_style()
             )
         return image
+    

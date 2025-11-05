@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="pose-realsense",
+    name="ost-realsense",
     version="0.1",
-    packages=find_packages(),
+    packages=find_packages(include=["src", "src.*"]),
     install_requires=[
         "opencv-python",
         "mediapipe",
@@ -13,7 +13,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "pose-realsense=pose_realsense.__main__:main"
+            "ost-realsense=src.cli_entry:main"
         ]
     },
 )
