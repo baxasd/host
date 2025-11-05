@@ -1,8 +1,8 @@
 import cv2
-from camera.realsense_camera import RealSenseCamera
-from pose.pose_estimator import PoseEstimator
-from filters.kalman_smoother import KalmanSmoother
-from utils.helpers import get_mean_depth, deproject
+from src.camera.realsense_camera import RealSenseCamera
+from src.pose.pose_estimator import PoseEstimator
+from src.filters.kalman_smoother import KalmanSmoother
+from src.utils.helpers import get_mean_depth, deproject
 
 def run_system(use_kalman=True, show_depth=False):
     print("[INFO] Initializing camera...")
