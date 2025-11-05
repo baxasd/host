@@ -38,18 +38,21 @@ git clone https://github.com/baxasd/OST.git
 cd OST
 ````
 
-### 2. Install dependencies
+### 2. Create vistual environment and install dependencies
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
 > ⚠️ **Note:** Tested only on **Python 3.12.3**. Other versions may not be compatible.
 
-### 3. Run the application
+### 3. Install pip package and run
 
 ```bash
-python main.py
+pip install .
+ost-realsense -h
 ```
 
 ---
