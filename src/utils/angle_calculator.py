@@ -1,20 +1,36 @@
+"""Utilities for computing joint angles from 3D landmarks.
+
+This module focuses on robust angle calculations in 3D by projecting
+vectors onto the local plane of the joint triplet (a - b - c). This
+helps reduce noise introduced by depth measurement errors.
+"""
+
 import numpy as np
-import math
+
 
 class AngleCalculator:
     """Calculates joint angles in 3D with plane correction for better accuracy."""
 
     def __init__(self):
+        # No state required for this stateless utility class
         pass
 
     @staticmethod
     def vector(a, b):
-        """Vector from point a to b."""
+        """Return vector from point `a` to point `b` (3D).
+
+        Expects `a` and `b` to be sequences of length 3. Using a small
+        helper keeps the geometric code concise elsewhere.
+        """
         return np.array([b[i] - a[i] for i in range(3)])
 
     @staticmethod
     def angle_between(v1, v2):
-        """Return angle in degrees between two vectors."""
+        """Return angle in degrees between two vectors.
+
+        Uses a numerically safe arccos by clipping the cosine argument.
+        Returns 0.0 for degenerate vectors.
+        """
         dot = np.dot(v1, v2)
         mag1 = np.linalg.norm(v1)
         mag2 = np.linalg.norm(v2)
@@ -25,27 +41,43 @@ class AngleCalculator:
 
     @staticmethod
     def project_to_plane(v, normal):
-        """Project vector v onto plane defined by normal."""
+        """Project vector `v` onto the plane defined by `normal`.
+
+        The normal is normalized inside the function. The projection is
+        performed using standard vector projection formula.
+        """
         normal = normal / np.linalg.norm(normal)
         return v - np.dot(v, normal) * normal
 
     def calculate(self, landmarks):
         """
-        landmarks: dict {id: (X, Y, Z)}
-        Returns a dictionary of joint angles: elbows, shoulders, hips, knees
+        Compute a set of joint angles from 3D landmarks.
+
+        Parameters
+        - landmarks: dict mapping MediaPipe landmark id -> (X, Y, Z)
+
+        Returns
+        - dict of joint name -> angle in degrees or None if not computable
         """
         angles = {}
 
-        # MediaPipe landmark IDs
-        LEFT_SHOULDER, RIGHT_SHOULDER = 11, 12
-        LEFT_ELBOW, RIGHT_ELBOW = 13, 14
-        LEFT_WRIST, RIGHT_WRIST = 15, 16
-        LEFT_HIP, RIGHT_HIP = 23, 24
-        LEFT_KNEE, RIGHT_KNEE = 25, 26
-        LEFT_ANKLE, RIGHT_ANKLE = 27, 28
+        # Use centralized landmark IDs from utils.landmarks for consistency
+        from src.utils.landmarks import (
+            LEFT_SHOULDER, RIGHT_SHOULDER,
+            LEFT_ELBOW, RIGHT_ELBOW,
+            LEFT_WRIST, RIGHT_WRIST,
+            LEFT_HIP, RIGHT_HIP,
+            LEFT_KNEE, RIGHT_KNEE,
+            LEFT_ANKLE, RIGHT_ANKLE,
+        )
 
         def safe_angle(a_id, b_id, c_id):
-            """Calculate angle at joint b, projecting onto the plane formed by a-b-c."""
+            """Calculate the angle at joint `b_id` using points a-b-c.
+
+            Projects the two limb vectors onto the plane defined by the
+            triangle (a-b-c) before computing the angle to improve
+            robustness to out-of-plane noise.
+            """
             try:
                 a = landmarks.get(a_id)
                 b = landmarks.get(b_id)
@@ -56,12 +88,13 @@ class AngleCalculator:
                 v1 = self.vector(b, a)
                 v2 = self.vector(b, c)
 
-                # Plane normal
+                # Plane normal formed by the two vectors
                 plane_normal = np.cross(v1, v2)
                 if np.linalg.norm(plane_normal) == 0:
-                    return self.angle_between(v1, v2)  # straight line case
+                    # Degenerate case (collinear points) — fall back to basic angle
+                    return self.angle_between(v1, v2)
 
-                # Project vectors onto the plane
+                # Project vectors onto the plane and compute angle between them
                 v1_proj = self.project_to_plane(v1, plane_normal)
                 v2_proj = self.project_to_plane(v2, plane_normal)
 
