@@ -18,6 +18,14 @@ def main():
         action="store_true",
         help="Display per-joint depth values in image"
     )
+
+    # Argument to show the coordinates in image
+    parser.add_argument(
+        "--show-angles",
+        action="store_true",
+        help="Display per-joint angle values in image"
+    )
+
     # Argument specifies model complexity 
     parser.add_argument("--model", type=int, choices=[0, 1, 2], default=1,
                     help="Pose model complexity: 0 (lite), 1 (full), 2 (heavy)")
@@ -25,7 +33,7 @@ def main():
     args = parser.parse_args()
 
     # Calls run function with given arguments
-    run_system(use_kalman=args.use_kalman, show_depth=args.show_depth, model=args.model)
+    run_system(use_kalman=args.use_kalman, show_depth=args.show_depth, show_angles=args.show_angles, model=args.model)
 
 if __name__ == "__main__":
     main()
